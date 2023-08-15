@@ -1,0 +1,22 @@
+{
+  "name": "barlife",
+  "version": "1.0.0",
+  "description": "BarLife social media app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonmcfee03/BarLife.git"
+  },
+  "author": "Jon McFee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jonmcfee03/BarLife/issues"
+  },
+  "homepage": "https://github.com/jonmcfee03/BarLife#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
