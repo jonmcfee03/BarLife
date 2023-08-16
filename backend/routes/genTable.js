@@ -55,7 +55,27 @@ var tableparams = {
         },
         ProvisionedThroughput: {
           ReadCapacityUnits: 5,
-          WriteCapacityUnits: 5
+          WriteCapacityUnits: 5,
+        }
+      },
+      {
+        IndexName: 'reversed_keys',
+        KeySchema: [
+            {
+                AttributeName: 'SK',
+                KeyType: 'HASH',
+            },
+            {
+                AttributeName: 'PK',
+                KeyType: 'RANGE',
+            }
+        ],
+        Projection: {
+            ProjectionType: 'ALL'
+        },
+        ProvisionedThroughput: {
+            ReadCapacityUnits: 10,
+            WriteCapacityUnits: 10,
         }
       }
     ],
