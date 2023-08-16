@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { genTable } from './routes/genTable.js';
+import { user } from './routes/user.js'
 
 dotenv.config();
 
@@ -19,5 +20,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`server at http://localhost/${PORT}`);
+    console.log(`server at http://localhost:${PORT}`);
 });

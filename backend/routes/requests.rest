@@ -1,2 +1,13 @@
 GET http://localhost:5000/api/genTable/
 
+###
+
+POST http://localhost:5000/api/user/signup
+Content-Type: application/json
+
+{
+    "email" : "johndoe@gmail.com",
+    "username" : "TestUser",
+    "password" : "Password123!"
+}
+

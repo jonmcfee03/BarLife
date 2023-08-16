@@ -87,6 +87,6 @@ var tableparams = {
     } catch {
         console.log(error);
     }
-}))
+}));
 
 export { genTable };
