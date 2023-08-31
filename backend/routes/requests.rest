@@ -11,3 +11,12 @@ Content-Type: application/json
     "password" : "Password123!"
 }
 
+### 
+POST http://localhost:5000/api/user/signin
+Content-Type: application/json
+
+{
+    "email" : "johndoe@gmail.com",
+    "password" : "Password123!"
+}
+
