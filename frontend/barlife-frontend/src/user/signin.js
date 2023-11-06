@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useCookies } from 'react-cookie';
 
 function SignInForm({ onSignIn }) {
     const [email, setEmail] = useState('');
@@ -15,15 +14,22 @@ function SignInForm({ onSignIn }) {
                 email: email, 
                 password: password });
 
-            const userJWT = res.data.accessToken;
-            console.log(userJWT);
-            onSignIn(userJWT);
-            console.log("Signin response:", userJWT);
+
+            if (res.data.success == false) {
+                //ADD LOGIN ERROR MESSAGE TO SCREEN
+                console.log('Sign-in failed. Please check your email and password.');
+            }
+            else {
+                const userJWT = res.data.accessToken;
+                onSignIn(userJWT);
+            }
 
         } catch (error) {
             console.error('Signin error: ', error);
         }
     };
+
+
 
     return (
         <form onSubmit={handleSignIn}>

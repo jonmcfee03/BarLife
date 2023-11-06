@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { db, MainTable, EmailTable } from '../config.js';
 import { v4 as uuidv4 } from 'uuid';
 import jwt from 'jsonwebtoken';
+import now from 'lodash';
 
 const user = express.Router();
 
@@ -48,10 +49,11 @@ expressAsyncHandler(async (req, res) => {
             const user = { 
                 uuid: uuid,
                 username: username,
-                expiresIn: '24h'
+                iat: now(),
+                exp: now() + (60 * 60 * 24),
             }
 
-            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+            const accessToken = signJWT(user);
 
             res.send({
                 success: true,
@@ -83,14 +85,17 @@ expressAsyncHandler(async (req, res) => {
         let queryResponse = await db.query(queryParams).promise();
         if (queryResponse.Items.length == 1) {
             if (await bcrypt.compare(req.body.password, queryResponse.Items[0].password)) {
-                console.log("success");
+                const time = Math.floor(Date.now() / 1000);
+                console.log(time);
+
                 const user = { 
                     uuid: queryResponse.Items[0].PK,
                     username: queryResponse.Items[0].username,
-                    expiresIn: '24h',
+                    iat: time,
+                    exp: time + (60 * 60 * 24),
                 }
 
-                const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+                const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
 
                 res.send({
                     success: true,

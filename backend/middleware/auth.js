@@ -14,10 +14,4 @@ function authToken(req, res, next) {
     })
 };
 
-function decodeJWT(jwtToken) {
-    const decodedToken = jwt.decode(jwtToken);
-
-    return decodedToken;
-}
-
-export { authToken, decodeJWT };
+export { authToken };

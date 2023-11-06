@@ -7,28 +7,24 @@ import HomePage from './home/home.js';
 import { CookiesProvider, useCookies } from 'react-cookie';
 
 function App() {
-  const [cookies, setCookie, removeCookie] = useCookies(["user"])
-
-  console.log("cookies.user", cookies.user);
+  const [cookies, setCookie, removeCookie] = useCookies(["user_jwt"])
 
   function handleSignIn(user) {
-    setCookie("user", user);
+    setCookie("user_jwt", user);
   }
 
   function handleSignOut() {
-    removeCookie("user");
+    removeCookie("user_jwt");
   }
 
   return (
-    <CookiesProvider>
-      <div className="App">
-        {cookies.user ? (
-          <HomePage user={cookies.user} onSignOut={handleSignOut}/>
-        ) : (
-          <SignInForm onSignIn={handleSignIn}/>
-        )}
-      </div>
-    </CookiesProvider>
+    <div className="App">
+      {(cookies.user_jwt !== undefined && cookies.user_jwt !== null ) ? (
+        <HomePage user={cookies.user_jwt} onSignOut={handleSignOut}/>
+      ) : (
+        <SignInForm onSignIn={handleSignIn}/>
+      )}
+    </div>
   );
 }
 
