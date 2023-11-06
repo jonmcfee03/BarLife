@@ -47,13 +47,19 @@ expressAsyncHandler(async (req, res) => {
 
             await db.put(params).promise();
 
-            const user = { name: uuid }
+            const user = { 
+                uuid: uuid,
+                name: username,
+                expiresIn: '24h'
+            }
+            
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
 
             res.send({
                 success: true,
                 message: req.body.email + " signed up",
                 accessToken: accessToken,
+                tokenType: "Bearer",
             });
         }
     } catch {
@@ -78,17 +84,19 @@ expressAsyncHandler(async (req, res) => {
         }
         let queryResponse = await db.query(queryParams).promise();
         if (queryResponse.Items.length == 1) {
-            if (await bcrypt.compare(req.body.password, queryResponse.Items[0].password)) {
+            if (await bcrypt.compare(req.body.password, queryResponse.Items[0].password).promise()) {
                 console.log("success");
                 const user = { 
                     uuid: queryResponse.Items[0].PK,
                     name: queryResponse.Items[0].username,
+                    expiresIn: '24h',
                 }
                 const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
                     res.send({
                         success: true,
                         message: "signed in successfully",
                         accessToken: accessToken,
+                        tokenType: "Bearer",
                     });
 
             }
@@ -109,9 +117,9 @@ expressAsyncHandler(async (req, res) => {
         }
     } catch {
         console.log("Error: ", error);
-        res.send({
+        res.status(500).send({
             success: false,
-            error: error,
+            error: "An error occurred during sign-in",
         });
     }
 }));

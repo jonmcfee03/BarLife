@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { CookiesProvider, useCookies } from 'react-cookie';
-import { setCookie } from '../App.js';
+import { useCookies } from 'react-cookie';
 
 function SignInForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [cookies, setCookie] = useCookies(["user"]);
 
     const handleSignIn = async (e) => {
         e.preventDefault();
 
         try {
 
-            const response = await axios.post('http://localhost:5000/api/user/signin', { 
+            const res = await axios.post('http://localhost:5000/api/user/signin', { 
                 email: email, 
                 password: password });
 
-            const user = response.data;
-            setCookie("user", user, { path: "/api/user"})
-            console.log("Signin response:", response.data);
+            const user = res.data.accessToken;
+            setCookie("user", user);
+            console.log("Signin response:", res.data.accessToken);
 
         } catch (error) {
             console.error('Signin error: ', error);
