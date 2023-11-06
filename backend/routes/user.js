@@ -85,12 +85,23 @@ expressAsyncHandler(async (req, res) => {
         let queryResponse = await db.query(queryParams).promise();
         if (queryResponse.Items.length == 1) {
             if (await bcrypt.compare(req.body.password, queryResponse.Items[0].password)) {
+
+                const mainTableQueryParams = {
+                    TableName: MainTable,
+                    KeyConditionExpression: 'PK = :PKValue AND SK = :SKValue',
+                    ExpressionAttributeValues: {
+                        ':PKValue': queryResponse.Items[0].PK,
+                        ':SKValue': queryResponse.Items[0].SK,
+                    }
+                }
+
+                const mainTableQueryResponse = await db.query(mainTableQueryParams).promise();
+
                 const time = Math.floor(Date.now() / 1000);
-                console.log(time);
 
                 const user = { 
-                    uuid: queryResponse.Items[0].PK,
-                    username: queryResponse.Items[0].username,
+                    uuid: mainTableQueryResponse.Items[0].PK,
+                    username: mainTableQueryResponse.Items[0].username,
                     iat: time,
                     exp: time + (60 * 60 * 24),
                 }

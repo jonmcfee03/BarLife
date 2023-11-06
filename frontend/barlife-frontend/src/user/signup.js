@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function SignUpForm() {
+function SignUpForm({ onSignUp }) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -10,21 +10,29 @@ function SignUpForm() {
         e.preventDefault();
 
         try {
-
-            const response = await axios.post('http://localhost:5000/api/user/signup', { 
+            const res = await axios.post('http://localhost:5000/api/user/signup', { 
                 username: username,
                 email: email, 
                 password: password });
 
-            console.log("Signup response:", response.data);
+            if (res.data.success == false) {
+                //ADD LOGIN ERROR MESSAGE TO SCREEN
+                console.log('Sign-up failed. Email is already taken.');
+            }
+            else {
+                const userJWT = res.data.accessToken;
+                onSignUp(userJWT);
+            }
+            console.log("Signup response:", res.data);
 
-        } catch (error) {
+        } catch (error) { 
             console.error('Signup error: ', error);
         }
     };
 
     return (
         <form onSubmit={handleSignUp}>
+            <h1>Sign Up</h1>
             <label>Username</label>
             <input type="username" value={username} onChange={(e) => setUsername(e.target.value)} />
             
@@ -34,7 +42,7 @@ function SignUpForm() {
             <label>Password</label>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
-            <button type="submit">Sign In</button>
+            <button type="submit">Sign Up</button>
         </form>
     );
 }
