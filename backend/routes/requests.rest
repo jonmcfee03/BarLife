@@ -6,7 +6,7 @@ POST http://localhost:5000/api/user/signup
 Content-Type: application/json
 
 {
-    "email" : "johndoe@gmail.com",
+    "email" : "jmcfee@gmail.com",
     "username" : "TestUser",
     "password" : "Password123!"
 }

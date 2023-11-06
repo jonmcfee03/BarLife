@@ -4,6 +4,9 @@ import bcrypt from 'bcryptjs';
 //import { isAuth, generateToken } from '../utils.js';
 import { db, MainTable, EmailTable } from '../config.js';
 import { v4 as uuidv4 } from 'uuid';
+import config from 'dotenv';
+import jwt from 'jsonwebtoken';
+import { authToken } from '../middleware/auth.js'
 
 const user = express.Router();
 
@@ -45,9 +48,13 @@ expressAsyncHandler(async (req, res) => {
 
             await db.put(params).promise();
 
+            const user = { name: uuid }
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+
             res.send({
                 success: true,
                 message: req.body.email + " signed up",
+                accessToken: accessToken,
             });
         }
     } catch {
@@ -62,7 +69,6 @@ expressAsyncHandler(async (req, res) => {
 user.post('/signin',
 expressAsyncHandler(async (req, res) => {
     try {
-        console.log(req.body.password);
         const queryParams = {
             TableName: MainTable,
             IndexName: EmailTable,
@@ -74,13 +80,15 @@ expressAsyncHandler(async (req, res) => {
         let queryResponse = await db.query(queryParams).promise();
         if (queryResponse.Items.length == 1) {
             if (await bcrypt.compare(req.body.password, queryResponse.Items[0].password)) {
-                console.log('true');
                 console.log("success");
-                res.send({
-                    success: true,
-                    message: "signed in successfully",
-                    //need to add middleware
-                });
+                const user = { name: queryResponse.Items[0].PK }
+                const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+                    res.send({
+                        success: true,
+                        message: "signed in successfully",
+                        accessToken: accessToken,
+                    });
+
             }
             else {
                 console.log("failure");
