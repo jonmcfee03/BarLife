@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+
 
 function authToken(req, res, next) {
     const authHeader = req.headers['authorization'];

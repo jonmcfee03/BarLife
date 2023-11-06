@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { query } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import bcrypt from 'bcryptjs';
 import { db, MainTable, EmailTable } from '../config.js';
@@ -80,7 +80,10 @@ expressAsyncHandler(async (req, res) => {
         if (queryResponse.Items.length == 1) {
             if (await bcrypt.compare(req.body.password, queryResponse.Items[0].password)) {
                 console.log("success");
-                const user = { name: queryResponse.Items[0].PK }
+                const user = { 
+                    uuid: queryResponse.Items[0].PK,
+                    name: queryResponse.Items[0].username,
+                }
                 const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
                     res.send({
                         success: true,
