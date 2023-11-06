@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
 
 
 function authToken(req, res, next) {
@@ -13,6 +12,12 @@ function authToken(req, res, next) {
         req.user = user;
         next();
     })
+};
+
+function decodeJWT(jwtToken) {
+    const decodedToken = jwt.decode(jwtToken);
+
+    return decodedToken;
 }
 
-export { authToken };
+export { authToken, decodeJWT };

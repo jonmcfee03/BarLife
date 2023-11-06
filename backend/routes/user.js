@@ -1,11 +1,9 @@
-import express, { query } from 'express';
+import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import bcrypt from 'bcryptjs';
 import { db, MainTable, EmailTable } from '../config.js';
 import { v4 as uuidv4 } from 'uuid';
-import config from 'dotenv';
 import jwt from 'jsonwebtoken';
-import { authToken } from '../middleware/auth.js'
 
 const user = express.Router();
 
@@ -49,10 +47,10 @@ expressAsyncHandler(async (req, res) => {
 
             const user = { 
                 uuid: uuid,
-                name: username,
+                username: username,
                 expiresIn: '24h'
             }
-            
+
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
 
             res.send({
@@ -84,20 +82,22 @@ expressAsyncHandler(async (req, res) => {
         }
         let queryResponse = await db.query(queryParams).promise();
         if (queryResponse.Items.length == 1) {
-            if (await bcrypt.compare(req.body.password, queryResponse.Items[0].password).promise()) {
+            if (await bcrypt.compare(req.body.password, queryResponse.Items[0].password)) {
                 console.log("success");
                 const user = { 
                     uuid: queryResponse.Items[0].PK,
-                    name: queryResponse.Items[0].username,
+                    username: queryResponse.Items[0].username,
                     expiresIn: '24h',
                 }
+
                 const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-                    res.send({
-                        success: true,
-                        message: "signed in successfully",
-                        accessToken: accessToken,
-                        tokenType: "Bearer",
-                    });
+
+                res.send({
+                    success: true,
+                    message: "signed in successfully",
+                    accessToken: accessToken,
+                    tokenType: "Bearer",
+                });
 
             }
             else {
